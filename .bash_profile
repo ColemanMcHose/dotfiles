@@ -7,13 +7,16 @@ alias ls='ls -GFh'
 
 export USER_HOME="$HOME"
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+nvm use 10.16.0
 
 alias eclim=/Applications/Eclipse.app/Contents/Eclipse/eclimd
 alias lew=./gradlew
-alias lew wl='./gradlew writelocks --write-locks'
-alias mmparse='./gradlew mparse'
+alias gs='git status'
+alias gn='git number'
+alias eclipse='/Applications/Eclipse.app/Contents/MacOS/eclipse &'
 
 alias sb='source ~/.bash_profile'
 
@@ -32,13 +35,12 @@ alias chall='chmod 777 *'
 alias cd..='cd ..'
  
 ## a quick way to get out of current directory ##
+alias ,='cd -'
 alias .='cd ..'
 alias ..='cd ../../'
 alias ...='cd ../../../'
 alias ....='cd ../../../../'
 alias .....='cd ../../../../../'
-alias .4='cd ../../../../'
-alias .5='cd ../../../../..'
 
 ## Colorize the grep command output for ease of use (good for log files)##
 alias grep='grep --color=auto'
@@ -63,12 +65,15 @@ source ~/.git-completion.bash
 #minikube stuff
 alias mk='minikube'
 alias mkd='mk dashboard'
+alias mks='mk start --memory=20000 --disk-size=30GB  --kubernetes-version=1.15.4 --vm-driver=virtualbox'
 alias k='kubectl'
 alias kgp='kubectl get pods -A'
+alias wkgp='watch kubectl get pods -A'
 alias kpf='kubectl port-forward '
+#alias monf=“heh=$(kubectl get pods -n mongo | grep mongo | sed -n -e ‘s/^\(mongo[^/s]*\)\( .*\)$/\1/p’); kubectl port-forward $heh -n mongo 27017”
 
-alias bad="./build-and-deploy-"+dirname+".sh"
-alias eclipse='/Applications/Eclipse.app/Contents/MacOS/eclipse &'
+
+#skaffold stuff
 alias sk='skaffold'
 alias skrk='sk run && mkd'
 alias skd='sk dev'
@@ -76,6 +81,16 @@ alias skdel='sk delete'
 alias skr='skdel && sk run'
 
 alias mango='ulimit -n 2000 && mongod'
+
+#leidos platform helpers 
+alias bdd='yarn buildDemoDev'
+alias getleafjs='npm login --registry=https://repo.cde.mgw.leidos.com/nexus/repository/leidos-packages/ --scope=@leaf-js'
 alias yomane='yo @platform/leaf-service'
-alias bar='sh ~/code/dev/core/workflow-app/deployment/scripts/build-and-redeploy-workflow-app-image.sh'
+alias lew wl='./gradlew writelocks --write-locks'
+alias mmparse='./gradlew mparse'
+
+
+alias lint='npm run-script lint'
+alias lintfix='npm run-script lint:fix'
+alias lf='lintfix'
 
