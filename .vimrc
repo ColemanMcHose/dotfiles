@@ -15,7 +15,7 @@ Plugin 'mattn/emmet-vim'
 Plugin 'heavenshell/vim-jsdoc'
 "Plugin 'Galooshi/vim-import-js'
 Plugin 'pangloss/vim-javascript'
-Plugin 'prettier/vim-prettier'
+"Plugin 'prettier/vim-prettier'
 "Plugin 'moll/vim-node'
 "Plugin 'skywind3000/asyncrun.vim'
 Plugin 'w0rp/ale'
@@ -47,11 +47,20 @@ set relativenumber
 nnoremap <leader>rl :set relativenumber!<CR>
 set incsearch
 set autoindent
-set formatoptions-=cro
+" no auto comments on new line
+set formatoptions-=r formatoptions-=c formatoptions-=o
+
 
 "avoid having to save on changing buffers 
 set hidden
 "set textwidth=100
+
+"""""random jobs"""""
+"" makes the test data file found in metadata editor app
+nnoremap <leader>1 iexport const <ESC>"%pF.dWa = <ESC>:r !pbpaste<CR>:w<CR>
+
+"""""find replace""""""
+nnoremap <leader>gr yiw:%s/<C-R>0/
 
 """""scrolling""""""
 nnoremap ç 3<C-E>
@@ -72,17 +81,17 @@ nnoremap ≥ <C-W>><C-W>>
 nnoremap ≤ <C-W><<C-W><
 
 """""edit vim/bash short cuts""""""
-nnoremap <leader>eb :e ~/.bash_profile<CR>
+nnoremap <leader>eb :e ~/.bash_profile<CR> 
 nnoremap <leader>rb :!source ~/.bash_profile<CR>
 nnoremap <leader>rv :source $MYVIMRC<CR> 
 nnoremap <leader>ev :e $MYVIMRC<CR>
-nnoremap <leader>sv :vsplit<CR><C-W><C-W>
-nnoremap <leader>sh :split<CR><C-W><C-W>
 nnoremap <leader>sev :vsplit $MYVIMRC<CR>
 
 """""buffer shortcuts"""""
+nnoremap <leader>sv :vsplit<CR><C-W><C-W>
+nnoremap <leader>sh :split<CR><C-W><C-W>
 nnoremap <leader>ww <C-W><C-W>
-nnoremap <leader>wl <C-W>l
+nnoremap <leader>wl <C-W>l 
 nnoremap <leader>wk <C-W>k
 nnoremap <leader>wj <C-W>j
 nnoremap <leader>wh <C-W>h
@@ -96,8 +105,6 @@ nnoremap <leader>tn :e ~/.menotes<CR>
 """""misc shortcuts"""""
 "remap visual block
 nnoremap <leader>v <C-V>
-"paste but keep on clipboard
-"nnoremap <leader>p ciw<C-R>0
 
 """""commenting shortcuts"""""
 
@@ -118,10 +125,12 @@ nnoremap <leader>d :JsDoc<CR>
 """""react snippets""""""
 nnoremap <leader>us bceconst [<ESC>pa, <ESC>pb~biset<ESC>ea] = useState(
 nnoremap <leader>ue auseEffect(() => {<CR><TAB><ESC>mdi<CR>}, []);<ESC>`dA
+nnoremap <leader>i A<CR>// @ts-ignore<ESC>ddkP
+nnoremap <leader>ter kA<CR>{ () ? (<CR><CR>) : (<CR><CR>)}
 
 """""snippets"""""
 inoremap {<CR> {<CR>}<C-o>O
-inoremap sys System.out.println();<ESC>hi
+"inoremap sys System.out.println();<ESC>hi
 inoremap cdl console.log();<ESC>hi
 nnoremap <leader>sc acatch(error){<CR>console.error(error);<CR>}<ESC>
 
@@ -146,20 +155,18 @@ endif
 nnoremap :Q :q
 nnoremap :W :w
 
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=0 " 0 defaults to tabstop
 set expandtab
-nnoremap > >>
-nnoremap < <<
 
 set ruler
-set laststatus =2
+set laststatus=2
 
-set nocompatible
 syntax enable
 filetype plugin on
 set path+=**
 set wildmenu
+set wildignore+=**/node_modules/** 
 
 nnoremap <leader>o :find 
 
@@ -171,6 +178,7 @@ set undodir=.undo/,~/.undo/,/tmp//
 
 """""ale"""""
 set omnifunc=ale#completion#OmniFunc
+set completeopt+=noinsert " obscure bug fix? https://github.com/dense-analysis/ale/issues/1700
 "
 " Enable completion where available.
 " This setting must be set before ALE is loaded.
@@ -182,43 +190,55 @@ let g:ale_completion_enabled = 1
 let g:ale_sign_error = '•'
 let g:ale_sign_warning = '~'
 
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\   'typescript': ['eslint', 'tsserver']
+\}
+
+let g:ale_fixers = {
+\    'javascript': ['eslint'],
+\    'typescript': ['eslint']
+\}
+let g:ale_fix_on_save = 1
+let g:ale_set_balloons = 1
+
 """""Prettier"""""
 
-" max line length that prettier will wrap on
-" Prettier default: 80
-let g:prettier#config#print_width = 100
-
-" number of spaces per indentation level
-" Prettier default: 2
-let g:prettier#config#tab_width = 4
-
-" use tabs over spaces
-" Prettier default: false
-let g:prettier#config#use_tabs = 'false'
-
-" print semicolons
-" Prettier default: true
-let g:prettier#config#semi = 'true'
-
-" single quotes over double quotes
-" Prettier default: false
-let g:prettier#config#single_quote = 'true'
-
-" print spaces between brackets
-" Prettier default: true
+"" max line length that prettier will wrap on
+"" Prettier default: 80
+"let g:prettier#config#print_width = 80
+"
+"" number of spaces per indentation level
+"" Prettier default: 2
+"let g:prettier#config#tab_width = 2
+"
+"" use tabs over spaces
+"" Prettier default: false
+"let g:prettier#config#use_tabs = 'false'
+"
+"" print semicolons
+"" Prettier default: true
+"let g:prettier#config#semi = 'true'
+"
+"" single quotes over double quotes
+"" Prettier default: false
+"let g:prettier#config#single_quote = 'true'
+"
+"" print spaces between brackets
+"" Prettier default: true
 let g:prettier#config#bracket_spacing = 'true'
-
-" put > on the last line instead of new line
-" Prettier default: false
-let g:prettier#config#jsx_bracket_same_line = 'false'
-
-" avoid|always
-" Prettier default: avoid
-let g:prettier#config#arrow_parens = 'avoid'
-
-" none|es5|all
-" Prettier default: none
-let g:prettier#config#trailing_comma = 'es5'
+"
+"" put > on the last line instead of new line
+"" Prettier default: false
+"let g:prettier#config#jsx_bracket_same_line = 'false'
+"
+"" avoid|always
+"" Prettier default: avoid
+"let g:prettier#config#arrow_parens = 'avoid'
+"
+"" none|es5|all
+"" Prettier default: none
+"let g:prettier#config#trailing_comma = 'es5'
 
 " flow|babylon|typescript|css|less|scss|json|graphql|markdown
 " Prettier default: babylon
@@ -234,13 +254,16 @@ let g:prettier#config#prose_wrap = 'preserve'
 let g:prettier#config#html_whitespace_sensitivity = 'css'
 
 
+let g:prettier#autoformat_config_present = 1
+
+let g:prettier#autoformat_config_files = ['.eslintrc.js']
+
+
 
 """""NERD tree"""""
 "autocmd StdinReadPre * let s:std_in=1
 "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-:cmap  tree NERDTree
 nnoremap  <leader>tr :NERDTree<CR>
-nnoremap  <leader>tu ggjjo
 :let g:NERTreeMinimalUI=1
 
 """""lightline"""""
@@ -250,8 +273,9 @@ nnoremap  <leader>tu ggjjo
 " wombat
 " deus
 let g:lightline = {
-      \ 'colorscheme': 'deus',
+      \ 'colorscheme': 'seoul256',
       \ }
 
 colorscheme elda
+"colorscheme tender
 
